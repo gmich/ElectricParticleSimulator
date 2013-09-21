@@ -31,7 +31,8 @@ namespace ElectricParticleSimulator
             this.ParticleTexture = particleTexture;
             ElectronMagnitute = ProtonMagnitute = 6;
             CoulombsConstant = 2;
-            ApplyForce = true;
+            ApplyForce = false;
+            //AddRandomParticles(100);
         }
 
         #endregion
@@ -104,6 +105,23 @@ namespace ElectricParticleSimulator
         void AddProton(Vector2 location)
         {
             electricParticles.Add(new Proton(ParticleTexture, Color.Red, ProtonMagnitute, CoulombsConstant, location));
+        }
+
+        #endregion
+
+        #region Add Random Particles
+
+        public void AddRandomParticles(int quantity)
+        {
+            Random rand = new Random();
+            for (int i = 0; i < quantity; i++)
+            {
+                Vector2 location = new Vector2(rand.Next(1,999),rand.Next(1,799));
+                if (rand.Next(0, 2) == 0)
+                    AddElectron(location);
+                else
+                    AddProton(location);
+            }
         }
 
         #endregion
