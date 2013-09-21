@@ -4,8 +4,11 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Content;
 
+
 namespace ElectricParticleSimulator
 {
+    using Input;
+
     public class ParticleManager
     {
         #region Declarations
@@ -17,25 +20,18 @@ namespace ElectricParticleSimulator
 
         #region Constructor
 
-        public ParticleManager(ContentManager Content)
+        public ParticleManager(Texture2D particleTexture)
         {
             electricParticles = new List<ElectricParticle>();
             timePassed = 0.0f;
-            ProtonTexture = Content.Load<Texture2D>(@"Proton");
-            ElectronTexture = Content.Load<Texture2D>(@"Electron");
+            this.ParticleTexture = particleTexture;
         }
 
         #endregion
 
         #region Properties
 
-        Texture2D ProtonTexture
-        {
-            get;
-            set;
-        }
-
-        Texture2D ElectronTexture
+        Texture2D ParticleTexture
         {
             get;
             set;
@@ -55,12 +51,12 @@ namespace ElectricParticleSimulator
 
         void AddElectron(Vector2 location)
         {
-            electricParticles.Add(new Electron(ElectronTexture, Color.Red, 10, CoulombsConstant, location));
+            electricParticles.Add(new Electron(ParticleTexture, Color.Red, 10, CoulombsConstant, location));
         }
 
         void AddProton(Vector2 location)
         {
-            electricParticles.Add(new Proton(ProtonTexture, Color.Blue, 6, CoulombsConstant, location));
+            electricParticles.Add(new Proton(ParticleTexture, Color.Blue, 6, CoulombsConstant, location));
         }
 
         #endregion
@@ -69,9 +65,29 @@ namespace ElectricParticleSimulator
 
         public void Update(GameTime gameTime)
         {
+            timePassed += (float)gameTime.ElapsedGameTime.TotalSeconds;
 
+            if (timePassed > 0.1f)
+            {
+                if (InputManager.LeftButtonIsClicked())
+                    AddElectron(InputManager.MousePosition);
+                else if (InputManager.RightButtonIsClicked())
+                    AddProton(InputManager.MousePosition);
+                
+                timePassed = 0.0f;
+            }
+
+            foreach (ElectricParticle particle in electricParticles)
+                foreach (ElectricParticle otherParticle in electricParticles)
+                    particle.ApplyPhysics(otherParticle);
         }
 
         #endregion
+
+        public void Draw(SpriteBatch spriteBatch)
+        {
+            foreach (ElectricParticle particle in electricParticles)
+                particle.Draw(spriteBatch);
+        }
     }
 }

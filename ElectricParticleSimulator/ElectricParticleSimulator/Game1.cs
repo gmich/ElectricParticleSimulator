@@ -11,17 +11,24 @@ using Microsoft.Xna.Framework.Media;
 
 namespace ElectricParticleSimulator
 {
-    /// <summary>
-    /// This is the main type for your game
-    /// </summary>
+    using Input;
+    using Diagnostics;
+
     public class Game1 : Microsoft.Xna.Framework.Game
     {
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
+        ParticleManager particleManager;
+        FpsMonitor fpsMonitor;
 
         public Game1()
         {
-            graphics = new GraphicsDeviceManager(this);
+            this.graphics = new GraphicsDeviceManager(this)
+            {
+                PreferMultiSampling = true,
+                PreferredBackBufferWidth = 1000,
+                PreferredBackBufferHeight = 800
+            };
             Content.RootDirectory = "Content";
         }
 
@@ -34,7 +41,7 @@ namespace ElectricParticleSimulator
         protected override void Initialize()
         {
             // TODO: Add your initialization logic here
-
+            fpsMonitor = new FpsMonitor();
             base.Initialize();
         }
 
@@ -47,6 +54,8 @@ namespace ElectricParticleSimulator
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
+            InputManager.Initialize();
+            particleManager = new ParticleManager(new Texture2D(GraphicsDevice, 1, 1, false, SurfaceFormat.Color));
             // TODO: use this.Content to load your game content here
         }
 
@@ -70,7 +79,10 @@ namespace ElectricParticleSimulator
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)
                 this.Exit();
 
-            // TODO: Add your update logic here
+            InputManager.Update(gameTime);
+            particleManager.Update(gameTime);
+            fpsMonitor.Update(gameTime);
+            this.Window.Title = fpsMonitor.FPS.ToString();
 
             base.Update(gameTime);
         }
@@ -83,9 +95,15 @@ namespace ElectricParticleSimulator
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
-            // TODO: Add your drawing code here
+            spriteBatch.Begin();
+
+            particleManager.Draw(spriteBatch);
+
+            spriteBatch.End();
 
             base.Draw(gameTime);
+
+            fpsMonitor.AddFrame();
         }
     }
 }

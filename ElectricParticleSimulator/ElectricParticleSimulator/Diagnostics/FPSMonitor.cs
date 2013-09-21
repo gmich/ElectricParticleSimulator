@@ -2,7 +2,7 @@
 using System.Diagnostics;
 using Microsoft.Xna.Framework;
 
-namespace SpeechGame.Diagnostics
+namespace ElectricParticleSimulator.Diagnostics
 {
     public class FpsMonitor
     {

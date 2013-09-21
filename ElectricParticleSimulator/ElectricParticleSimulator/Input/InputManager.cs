@@ -2,7 +2,7 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 
-namespace Input
+namespace ElectricParticleSimulator.Input
 {
     static public class InputManager 
     {
