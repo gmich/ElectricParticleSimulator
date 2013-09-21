@@ -42,6 +42,7 @@ namespace ElectricParticleSimulator
         {
             // TODO: Add your initialization logic here
             fpsMonitor = new FpsMonitor();
+            this.IsMouseVisible = true;
             base.Initialize();
         }
 
@@ -55,7 +56,7 @@ namespace ElectricParticleSimulator
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
             InputManager.Initialize();
-            particleManager = new ParticleManager(new Texture2D(GraphicsDevice, 1, 1, false, SurfaceFormat.Color));
+            particleManager = new ParticleManager(Content.Load<Texture2D>(@"particle"), Content.Load<SpriteFont>(@"Font"));
             // TODO: use this.Content to load your game content here
         }
 
@@ -95,7 +96,7 @@ namespace ElectricParticleSimulator
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
-            spriteBatch.Begin();
+            spriteBatch.Begin(SpriteSortMode.BackToFront, BlendState.AlphaBlend);
 
             particleManager.Draw(spriteBatch);
 

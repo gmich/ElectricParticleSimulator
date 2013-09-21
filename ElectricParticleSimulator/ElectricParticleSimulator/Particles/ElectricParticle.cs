@@ -10,6 +10,13 @@ namespace ElectricParticleSimulator
 {
     public abstract class ElectricParticle
     {
+
+        #region Declarations
+
+        Vector2 velocity;
+
+        #endregion
+
         #region Properties
 
         #region Physics Properties
@@ -34,8 +41,14 @@ namespace ElectricParticleSimulator
 
         public Vector2 Velocity
         {
-            get;
-            set;
+            get
+            {
+                return velocity;
+            }
+            set
+            {
+                velocity = new Vector2(MathHelper.Min(value.X, 100), MathHelper.Min(value.Y, 100));
+            }
         }
 
         #endregion
@@ -60,7 +73,7 @@ namespace ElectricParticleSimulator
         {
             get
             {
-                return 1;
+                return 5;
             }
         }
 
@@ -90,14 +103,14 @@ namespace ElectricParticleSimulator
             this.Location = Location;
             this.CoulombsConstant = CoulombsConstant;
             this.Color = Color;
+            Velocity = Vector2.Zero;
         }
 
         #endregion
 
         #region Determine Direction
 
-        public void ApplyPhysics(ElectricParticle otherParticle)
-        {}
+        public abstract void ApplyPhysics(ElectricParticle otherParticle);
 
         #endregion
 
@@ -105,7 +118,7 @@ namespace ElectricParticleSimulator
 
         public void Update(GameTime gameTime)
         {
-            this.Location = Velocity * (float)gameTime.ElapsedGameTime.TotalSeconds;
+            this.Location += Velocity * (float)gameTime.ElapsedGameTime.TotalSeconds;
         }
 
         #endregion
